@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gite Klasör Yükleme Rehberi</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        header {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .card {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .steps {
+            min-width: 100%;
+        }
+        
+        h2 {
+            color: #1a2a6c;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #fdbb2d;
+        }
+        
+        .step {
+            margin-bottom: 25px;
+            padding-left: 30px;
+            position: relative;
+        }
+        
+        .step-number {
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #1a2a6c;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        h3 {
+            margin-bottom: 8px;
+            color: #b21f1f;
+        }
+        
+        pre {
+            background: #f4f4f4;
+            padding: 12px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            border-left: 3px solid #fdbb2d;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .note {
+            background: #fff9e6;
+            padding: 12px;
+            border-left: 4px solid #fdbb2d;
+            margin: 15px 0;
+            border-radius: 3px;
+        }
+        
+        .interactive {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .upload-area {
+            border: 2px dashed #1a2a6c;
+            border-radius: 8px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .upload-area:hover {
+            background: #f0f7ff;
+            border-color: #b21f1f;
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            color: #1a2a6c;
+            margin-bottom: 10px;
+        }
+        
+        .btn {
+            background: #1a2a6c;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: #b21f1f;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #1a2a6c, #b21f1f);
+            width: 0%;
+            transition: width 0.3s;
+            border-radius: 10px;
+        }
+        
+        .command-list {
+            list-style-type: none;
+        }
+        
+        .command-list li {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 5px;
+            border-left: 3px solid #1a2a6c;
+        }
+        
+        .folder-structure {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            font-family: monospace;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .folder-item {
+            padding: 2px 5px;
+            margin: 2px 0;
+        }
+        
+        .folder-icon {
+            color: #fdbb2d;
+        }
+        
+        .file-icon {
+            color: #1a2a6c;
+        }
+        
+        footer {
+            width: 100%;
+            text-align: center;
+            margin-top: 30px;
+            color: white;
+            padding: 20px;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .card {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Gite Klasör Yükleme Rehberi</h1>
+            <p class="subtitle">Cursor'da açık olan klasörünüzden Gite'a tüm klasörü yükleme adımları</p>
+        </header>
+        
+        <div class="card steps">
+            <h2>Adım Adım Gite Klasör Yükleme</h2>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3>Gite Hesabınıza Giriş Yapın</h3>
+                <p>Gite hesabınıza giriş yapın ve yeni bir depo (repository) oluşturun veya var olan bir depoyu açın.</p>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3>Cursor'da Terminali Açın</h3>
+                <p>Cursor'da açık olan klasörünüzde terminali açın (Terminal > New Terminal veya Ctrl+Shift+`).</p>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3>Git'i Başlatın</h3>
+                <p>Aşağıdaki komutu terminale yazarak Git'i başlatın:</p>
+                <pre>git init</pre>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">4</div>
+                <h3>Tüm Klasörü Ekleyin</h3>
+                <p>Tüm klasörü staging area'ya eklemek için:</p>
+                <pre>git add .</pre>
+                <p class="note">Not: "." tüm dosya ve klasörleri ekler. Belirli dosyaları hariç tutmak için .gitignore dosyası kullanabilirsiniz.</p>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">5</div>
+                <h3>Commit Oluşturun</h3>
+                <p>Değişiklikleri commit edin:</p>
+                <pre>git commit -m "İlk commit"</pre>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">6</div>
+                <h3>Ana Dalı Oluşturun (Gerekirse)</h3>
+                <pre>git branch -M main</pre>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">7</div>
+                <h3>Uzak Depoyu Ekleyin</h3>
+                <p>Gite'daki deponuzun URL'sini ekleyin:</p>
+                <pre>git remote add origin https://gite.com/kullanici_adi/depo_adi.git</pre>
+                <p class="note">Not: URL'yi kendi Gite deponuzun URL'si ile değiştirin.</p>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">8</div>
+                <h3>Klasörü Gönderin</h3>
+                <p>Tüm klasörü Gite'a gönderin:</p>
+                <pre>git push -u origin main</pre>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">9</div>
+                <h3>Kimlik Doğrulama</h3>
+                <p>İstendiğinde Gite kullanıcı adı ve şifrenizi girin veya erişim token'ınızı kullanın.</p>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">10</div>
+                <h3>Doğrulama</h3>
+                <p>Gite'daki deponuzu kontrol ederek klasörün başarıyla yüklendiğini doğrulayın.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Hızlı Komut Listesi</h2>
+            <ul class="command-list">
+                <li><code>git init</code> - Git deposu başlatma</li>
+                <li><code>git status</code> - Durumu kontrol etme</li>
+                <li><code>git add .</code> - Tüm dosya ve klasörleri ekleme</li>
+                <li><code>git commit -m "mesaj"</code> - Commit oluşturma</li>
+                <li><code>git branch -M main</code> - Ana dalı oluşturma</li>
+                <li><code>git remote add origin [url]</code> - Uzak depo ekleme</li>
+                <li><code>git push -u origin main</code> - Klasörü gönderme</li>
+                <li><code>git clone [url]</code> - Depoyu klonlama</li>
+            </ul>
+        </div>
+        
+        <div class="card interactive">
+            <h2>Klasör Yapısı Simülasyonu</h2>
+            <p>Bu simülasyon, Gite'a klasör yükleme işlemini anlamanıza yardımcı olur.</p>
+            
+            <div class="upload-area" id="dropArea">
+                <div class="upload-icon">📁</div>
+                <p>Klasörünüzü sürükleyip bırakın veya seçmek için tıklayın</p>
+                <input type="file" id="folderInput" style="display: none;" webkitdirectory directory multiple>
+            </div>
+            
+            <div class="folder-structure" id="folderStructure">
+                <!-- Klasör yapısı burada gösterilecek -->
+            </div>
+            
+            <button class="btn" id="uploadBtn">Klasörü Yükle</button>
+            
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            
+            <div id="statusMessage"></div>
+        </div>
+        
+        <footer>
+            <p>Bu rehber, Gite'a klasör yükleme işlemini adım adım göstermek için hazırlanmıştır.</p>
+            <p>Gerçek yükleme işlemi için terminal komutlarını kullanmanız gerekmektedir.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropArea = document.getElementById('dropArea');
+            const folderInput = document.getElementById('folderInput');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBar = document.getElementById('progressBar');
+            const statusMessage = document.getElementById('statusMessage');
+            const folderStructure = document.getElementById('folderStructure');
+            
+            // Klasör seçme olayı
+            dropArea.addEventListener('click', () => {
+                folderInput.click();
+            });
+            
+            // Sürükle bırak olayları
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight() {
+                dropArea.style.backgroundColor = '#f0f7ff';
+                dropArea.style.borderColor = '#b21f1f';
+            }
+            
+            function unhighlight() {
+                dropArea.style.backgroundColor = '';
+                dropArea.style.borderColor = '#1a2a6c';
+            }
+            
+            dropArea.addEventListener('drop', handleDrop, false);
+            
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const items = dt.items;
+                
+                if (items && items.length && items[0].webkitGetAsEntry) {
+                    const entry = items[0].webkitGetAsEntry();
+                    if (entry && entry.isDirectory) {
+                        statusMessage.textContent = 'Klasör seçildi. Yüklemek için "Klasörü Yükle" butonuna tıklayın.';
+                        statusMessage.style.color = '#333';
+                        folderStructure.style.display = 'block';
+                        folderStructure.innerHTML = '<div class="folder-item"><span class="folder-icon">📁</span> ' + entry.name + '</div>';
+                    }
+                }
+            }
+            
+            folderInput.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    statusMessage.textContent = 'Klasör seçildi. Yüklemek için "Klasörü Yükle" butonuna tıklayın.';
+                    statusMessage.style.color = '#333';
+                    
+                    // Klasör yapısını göster
+                    folderStructure.style.display = 'block';
+                    const path = this.files[0].webkitRelativePath;
+                    const folderName = path.split('/')[0];
+                    
+                    let structureHTML = `<div class="folder-item"><span class="folder-icon">📁</span> ${folderName}</div>`;
+                    
+                    // İlk 10 dosyayı göster
+                    for (let i = 0; i < Math.min(this.files.length, 10); i++) {
+                        const file = this.files[i];
+                        const relativePath = file.webkitRelativePath;
+                        const fileName = relativePath.split('/').pop();
+                        structureHTML += `<div class="folder-item"><span class="file-icon">📄</span> ${fileName}</div>`;
+                    }
+                    
+                    if (this.files.length > 10) {
+                        structureHTML += `<div class="folder-item">... ve ${this.files.length - 10} daha fazla dosya</div>`;
+                    }
+                    
+                    folderStructure.innerHTML = structureHTML;
+                }
+            });
+            
+            // Yükleme butonu
+            uploadBtn.addEventListener('click', function() {
+                const files = folderInput.files;
+                if (files.length === 0) {
+                    statusMessage.textContent = 'Lütfen önce bir klasör seçin.';
+                    statusMessage.style.color = '#b21f1f';
+                    return;
+                }
+                
+                progressContainer.style.display = 'block';
+                statusMessage.textContent = 'Klasör yükleniyor...';
+                statusMessage.style.color = '#333';
+                
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 5;
+                    progressBar.style.width = `${progress}%`;
+                    
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        setTimeout(() => {
+                            statusMessage.innerHTML = 'Klasör başarıyla yüklendi! 🎉<br>Gerçek yükleme için terminal komutlarını kullanın.';
+                            statusMessage.style.color = '#1a2a6c';
+                        }, 500);
+                    }
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>
